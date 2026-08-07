@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" href="demon-extreme.png">
+  <title>SpaceGD | Premium Demonlist</title>
+  <style>
+    :root {
+      --bg-base: #07060b;
+      --bg-surface: #12101a;
+      --bg-card: #1b1726;
+      --bg-card-hover: #252035;
+      --border-color: #2e2642;
+      --accent-orange: #ff7b00;
+      --accent-red: #ff334b;
+      --accent-glow: rgba(255, 123, 0, 0.25);
+      --text-main: #f4f4f6;
+      --text-muted: #9490a2;
+      --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Layout Header */
+    header {
+      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+      border-bottom: 1px solid var(--border-color);
+      padding: 2.5rem 1rem;
+      text-align: center;
+      position: relative;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--accent-orange);
+      text-shadow: 0 0 20px var(--accent-glow);
+      margin-bottom: 1rem;
+    }
+
+    .nav-tabs {
+      display: inline-flex;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 50px;
+      padding: 4px;
+      gap: 4px;
+    }
+
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 24px;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.95rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+    }
+
+    .tab-btn.active {
+      background: var(--accent-orange);
+      color: var(--bg-base);
+      box-shadow: 0 0 15px var(--accent-glow);
+    }
+
+    /* Main Container */
+    main {
+      max-width: 900px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1rem;
+      flex-grow: 1;
+    }
+
+    /* Search & Controls Section */
+    .controls-wrapper {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-box {
+      flex: 1;
+      position: relative;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 14px 18px 14px 45px;
+      color: var(--text-main);
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-orange);
+      box-shadow: 0 0 10px var(--accent-glow);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      font-size: 1.1rem;
+    }
+
+    .view-section {
+      display: none;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      color: var(--text-main);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    h2::after {
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      background: var(--border-color);
+    }
+
+    /* Lists and Cards */
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--accent-orange);
+      transform: translateY(-2px);
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .rank-badge {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .card-subtitle i {
+      font-style: normal;
+      color: var(--accent-orange);
+    }
+
+    /* Tags */
+    .tag-container {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 2px;
+    }
+
+    .tag {
+      background: rgba(255, 123, 0, 0.1);
+      color: var(--accent-orange);
+      border: 1px solid rgba(255, 123, 0, 0.2);
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 6px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      flex-shrink: 0;
+    }
+
+    .difficulty-icon {
+      width: 28px;
+      height: 28px;
+      object-fit: contain;
+    }
+
+    .info-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.2s;
+    }
+
+    .info-btn:hover {
+      background: var(--accent-orange);
+      color: var(--bg-base);
+      border-color: var(--accent-orange);
+    }
+
+    /* Points Card Reference */
+    .points-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 20px;
+      margin-top: 1rem;
+    }
+
+    .points-panel h3 {
+      color: var(--accent-orange);
+      margin-bottom: 12px;
+      font-size: 1.1rem;
+    }
+
+    .points-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+      gap: 10px;
+      font-size: 0.95rem;
+      color: var(--text-muted);
+    }
+
+    .points-grid div span {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    /* Modal Overlay */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(7, 6, 11, 0.8);
+      backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      z-index: 1000;
+      padding: 1rem;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 16px;
+      padding: 24px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      transform: scale(0.95);
+      transition: transform 0.2s ease;
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .modal-title {
+      font-size: 1.2rem;
+      color: var(--accent-orange);
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      color: var(--text-main);
+      font-size: 1rem;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 1.5rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      background: var(--bg-surface);
+    }
+
+    footer a {
+      color: var(--accent-orange);
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SpaceGD Demonlist</h1>
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchView('levels')">Demonlist</button>
+      <button class="tab-btn" onclick="switchView('players')">Players List</button>
+    </div>
+  </header>
+
+  <main>
+    <!-- Universal Search Bar -->
+    <div class="controls-wrapper">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search levels, creators, or players..." oninput="handleSearch()">
+      </div>
+    </div>
+
+    <!-- Levels View -->
+    <div id="levelsView" class="view-section active">
+      <h2>Classic Levels</h2>
+      <ul class="item-list" id="classicList">
+        <li class="card" data-search="big fat balls zesocas chokepoints timing">
+          <div class="card-left">
+            <img src="2.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">Big Fat Balls</span>
+              <span class="card-subtitle">by <i>Zesocas</i></span>
+              <div class="tag-container">
+                <span class="tag">Chokepoints</span>
+                <span class="tag">Timing</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-right">
+            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
+            <button class="info-btn" onclick="openModal('Big Fat Balls', 'Victors: fayza<br>Verifier: Zesocas')">i</button>
+          </div>
+        </li>
+
+        <li class="card" data-search="where will you be tonight zesocas gimmicks memory">
+          <div class="card-left">
+            <img src="3.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">Where Will You Be Tonight</span>
+              <span class="card-subtitle">by <i>Zesocas</i></span>
+              <div class="tag-container">
+                <span class="tag">Gimmicks</span>
+                <span class="tag">Memory</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-right">
+            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
+            <button class="info-btn" onclick="openModal('Where Will You Be Tonight', 'Victors: fayza<br>Verifier: Zesocas')">i</button>
+          </div>
+        </li>
+      </ul>
+
+      <h2>Platformer Levels</h2>
+      <ul class="item-list" id="platformerList">
+        <li class="card" data-search="disintegration zesocas gimmicks speed">
+          <div class="card-left">
+            <img src="2.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">disintegration</span>
+              <span class="card-subtitle">by <i>Zesocas</i></span>
+              <div class="tag-container">
+                <span class="tag">Gimmicks</span>
+                <span class="tag">Fast-Paced</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-right">
+            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
+            <button class="info-btn" onclick="openModal('disintegration', 'Victors: stysan, Dusty<br>Verifier: Zesocas')">i</button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- Players View -->
+    <div id="playersView" class="view-section">
+      <h2>Leaderboard</h2>
+      <ul class="item-list" id="playerList">
+        <li class="card" data-search="zesocas">
+          <div class="card-left">
+            <img src="2.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">Zesocas</span>
+              <span class="card-subtitle">Top Contributor & Verifier</span>
+            </div>
+          </div>
+          <div class="card-right">
+            <button class="info-btn" onclick="openModal('Zesocas', '150 classic, 100 platformer')">i</button>
+          </div>
+        </li>
+
+        <li class="card" data-search="fayza">
+          <div class="card-left">
+            <img src="3.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">fayza</span>
+              <span class="card-subtitle">Pro Player</span>
+            </div>
+          </div>
+          <div class="card-right">
+            <button class="info-btn" onclick="openModal('fayza', '150 classic, 0 platformer')">i</button>
+          </div>
+        </li>
+
+        <li class="card" data-search="stysan">
+          <div class="card-left">
+            <img src="4.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">stysan</span>
+              <span class="card-subtitle">Platformer Specialist</span>
+            </div>
+          </div>
+          <div class="card-right">
+            <button class="info-btn" onclick="openModal('stysan', '0 classic, 100 platformer')">i</button>
+          </div>
+        </li>
+
+        <li class="card" data-search="dusty">
+          <div class="card-left">
+            <img src="4.png" class="rank-badge" alt="Rank">
+            <div class="card-content">
+              <span class="card-title">Dusty</span>
+              <span class="card-subtitle">Platformer Specialist</span>
+            </div>
+          </div>
+          <div class="card-right">
+            <button class="info-btn" onclick="openModal('Dusty', '0 classic, 100 platformer')">i</button>
+          </div>
+        </li>
+      </ul>
+
+      <div class="points-panel">
+        <h3>Points Reference</h3>
+        <div class="points-grid">
+          <div>1. <span>100 pts</span></div>
+          <div>2. <span>50 pts</span></div>
+          <div>3. <span>25 pts</span></div>
+          <div>4. <span>10 pts</span></div>
+          <div>5. <span>5 pts</span></div>
+          <div>5&lt;: <span>None</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Custom Info Modal Overlay -->
+  <div id="infoModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="modalTitle" class="modal-title">Details</span>
+        <button class="modal-close" onclick="forceCloseModal()">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    function switchView(viewName) {
+      const levelsView = document.getElementById('levelsView');
+      const playersView = document.getElementById('playersView');
+      const buttons = document.querySelectorAll('.tab-btn');
+
+      buttons.forEach(btn => btn.classList.remove('active'));
+
+      if (viewName === 'levels') {
+        levelsView.classList.add('active');
+        playersView.classList.remove('active');
+        buttons[0].classList.add('active');
+      } else {
+        playersView.classList.add('active');
+        levelsView.classList.remove('active');
+        buttons[1].classList.add('active');
+      }
+      handleSearch();
+    }
+
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value.toLowerCase().trim();
+      const cards = document.querySelectorAll('.card');
+
+      cards.forEach(card => {
+        const searchData = card.getAttribute('data-search') || '';
+        if (searchData.includes(query)) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    }
+
+    function openModal(title, text) {
+      document.getElementById('modalTitle').innerText = title;
+      document.getElementById('modalBody').innerHTML = text;
+      document.getElementById('infoModal').classList.add('open');
+    }
+
+    function closeModal(event) {
+      if (event.target.id === 'infoModal') {
+        document.getElementById('infoModal').classList.remove('open');
+      }
+    }
+
+    function forceCloseModal() {
+      document.getElementById('infoModal').classList.remove('open');
+    }
+  </script>
+
+</body>
+</html>
