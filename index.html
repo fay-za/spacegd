@@ -52,7 +52,6 @@
         radial-gradient(circle at 80% 20%, rgba(255, 119, 0, 0.08) 0%, transparent 40%);
     }
 
-    /* --- Header & Branding --- */
     header {
       background: rgba(16, 13, 26, 0.75);
       backdrop-filter: blur(12px);
@@ -116,7 +115,6 @@
       box-shadow: 0 4px 20px var(--accent-orange-glow);
     }
 
-    /* --- Layout Container --- */
     main {
       max-width: 960px;
       width: 100%;
@@ -125,7 +123,6 @@
       flex-grow: 1;
     }
 
-    /* --- Search & Controls --- */
     .controls-wrapper {
       margin-bottom: 2rem;
     }
@@ -166,7 +163,6 @@
       pointer-events: none;
     }
 
-    /* --- Section Headings --- */
     .section-title {
       font-family: var(--font-display);
       font-size: 1.4rem;
@@ -185,7 +181,6 @@
       background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
     }
 
-    /* --- List & Card Styles --- */
     .view-section {
       display: none;
       animation: fadeIn 0.3s ease;
@@ -251,7 +246,6 @@
       min-width: 0;
     }
 
-    /* --- Dynamic Rank Badges --- */
     .rank-badge {
       width: 42px;
       height: 42px;
@@ -324,11 +318,13 @@
       flex-shrink: 0;
     }
 
-    /* Custom SVG Demon Icon */
+    /* Classic PNG Demon Icon Styling */
     .demon-icon {
-      width: 34px;
-      height: 34px;
-      filter: drop-shadow(0 0 6px rgba(255, 42, 85, 0.5));
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(255, 42, 85, 0.4));
+      user-select: none;
     }
 
     .info-btn {
@@ -352,7 +348,6 @@
       transform: scale(1.05);
     }
 
-    /* --- Points Panel --- */
     .points-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
@@ -394,7 +389,6 @@
       font-weight: 700;
     }
 
-    /* --- Modal Window --- */
     .modal-overlay {
       position: fixed;
       inset: 0;
@@ -502,7 +496,6 @@
       font-size: 1rem;
     }
 
-    /* --- Footer --- */
     footer {
       text-align: center;
       padding: 2rem 1rem;
@@ -538,7 +531,6 @@
   </header>
 
   <main>
-    <!-- Universal Search Bar -->
     <div class="controls-wrapper">
       <div class="search-box">
         <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -577,7 +569,6 @@
     </div>
   </main>
 
-  <!-- Custom Info Modal Overlay -->
   <div id="infoModal" class="modal-overlay" onclick="closeModal(event)">
     <div class="modal-card">
       <div class="modal-header">
@@ -593,44 +584,84 @@
   </footer>
 
   <script>
-    // Universal SVG Demon Badge Component Generator
-    function getDemonIconSVG() {
-      return `
-        <svg class="demon-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 25 L35 40 L15 60 L30 85 L50 95 L70 85 L85 60 L65 40 L80 25 L60 30 L50 10 L40 30 Z" fill="#ff2a55" stroke="#ffe259" stroke-width="3"/>
-          <circle cx="38" cy="50" r="6" fill="#000"/><circle cx="39" cy="49" r="2" fill="#fff"/>
-          <circle cx="62" cy="50" r="6" fill="#000"/><circle cx="63" cy="49" r="2" fill="#fff"/>
-          <path d="M35 70 Q50 82 65 70" stroke="#000" stroke-width="4" fill="none"/>
-          <path d="M22 22 L10 5" stroke="#ff2a55" stroke-width="6" stroke-linecap="round"/>
-          <path d="M78 22 L90 5" stroke="#ff2a55" stroke-width="6" stroke-linecap="round"/>
-        </svg>
-      `;
+    // Standard Demon PNG Image URL (Official Pointercrate Demon List PNG)
+    const DEMON_ICON_PNG = "https://pointercrate.com/static/demonlist/images/demon.png";
+
+    // 1. Point Reference Mapping Rule
+    const POINT_SCALE = {
+      1: 100,
+      2: 50,
+      3: 25,
+      4: 10,
+      5: 5
+    };
+
+    function getPointsByRank(rank) {
+      return POINT_SCALE[rank] || 0;
     }
 
-    // Dynamic Database Architecture
+    // 2. Database of Levels
     const levelsData = {
       classic: [
-        { id: 'c1', rank: 2, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'] },
-        { id: 'c2', rank: 3, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'] },
-        { id: 'c3', rank: 4, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow'], verifier: 'Zesocas', victors: ['fayza'] }
+        { id: 'c1', rank: 1, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'] },
+        { id: 'c2', rank: 2, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'] },
+        { id: 'c3', rank: 3, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow'], verifier: 'Zesocas', victors: ['fayza'] }
       ],
       platformer: [
-        { id: 'p1', rank: 2, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty'] }
+        { id: 'p1', rank: 1, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty'] }
       ]
     };
 
-    const playersData = [
-      { rank: 1, name: 'fayza', classicPts: 250, platformerPts: 0 },
-      { rank: 2, name: 'Zesocas', classicPts: 125, platformerPts: 100 },
-      { rank: 3, name: 'Accilon', classicPts: 100, platformerPts: 0 },
-      { rank: 4, name: 'stysan', classicPts: 0, platformerPts: 100 },
-      { rank: 5, name: 'Dusty', classicPts: 0, platformerPts: 100 }
-    ];
-
+    let computedPlayersData = [];
     let currentView = 'levels';
 
-    // Render Function
+    // 3. Automatic Player Score Calculation Engine
+    function calculatePlayerScores() {
+      const playerMap = {};
+
+      const touchPlayer = (name) => {
+        if (!playerMap[name]) {
+          playerMap[name] = { name, classicPts: 0, platformerPts: 0 };
+        }
+      };
+
+      // Process Classic Levels
+      levelsData.classic.forEach(lvl => {
+        const points = getPointsByRank(lvl.rank);
+        const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
+        
+        completers.forEach(player => {
+          touchPlayer(player);
+          playerMap[player].classicPts += points;
+        });
+      });
+
+      // Process Platformer Levels
+      levelsData.platformer.forEach(lvl => {
+        const points = getPointsByRank(lvl.rank);
+        const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
+        
+        completers.forEach(player => {
+          touchPlayer(player);
+          playerMap[player].platformerPts += points;
+        });
+      });
+
+      // Convert map to sorted array with auto-assigned ranks
+      computedPlayersData = Object.values(playerMap)
+        .map(p => ({
+          ...p,
+          totalPts: p.classicPts + p.platformerPts
+        }))
+        .sort((a, b) => b.totalPts - a.totalPts)
+        .map((p, index) => ({
+          ...p,
+          rank: index + 1
+        }));
+    }
+
     function init() {
+      calculatePlayerScores();
       renderLevels();
       renderPlayers();
     }
@@ -638,7 +669,6 @@
     function renderLevels(filter = '') {
       const classicContainer = document.getElementById('classicList');
       const platformerContainer = document.getElementById('platformerList');
-      
       const filterTerm = filter.toLowerCase().trim();
 
       const filterFn = (lvl) => {
@@ -673,7 +703,7 @@
             </div>
           </div>
           <div class="card-right">
-            ${getDemonIconSVG()}
+            <img class="demon-icon" src="${DEMON_ICON_PNG}" alt="Demon Icon" />
             <button class="info-btn" onclick="openLevelModal('${lvl.id}')" aria-label="Details">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
             </button>
@@ -686,19 +716,18 @@
       const container = document.getElementById('playerList');
       const filterTerm = filter.toLowerCase().trim();
 
-      const filtered = playersData.filter(p => p.name.toLowerCase().includes(filterTerm));
+      const filtered = computedPlayersData.filter(p => p.name.toLowerCase().includes(filterTerm));
 
       container.innerHTML = filtered.length 
         ? filtered.map(p => {
-            const total = p.classicPts + p.platformerPts;
             const rankClass = p.rank <= 3 ? `rank-${p.rank}` : '';
             return `
               <li class="card">
                 <div class="card-left">
-                  <div class="rank-badge ${rankClass}">${p.rank <= 3 ? `#${p.rank}` : p.rank}</div>
+                  <div class="rank-badge ${rankClass}">#${p.rank}</div>
                   <div class="card-content">
                     <span class="card-title">${p.name}</span>
-                    <span class="card-subtitle">Score: <strong>${total} pts</strong></span>
+                    <span class="card-subtitle">Score: <strong>${p.totalPts} pts</strong></span>
                   </div>
                 </div>
                 <div class="card-right">
@@ -712,7 +741,6 @@
         : `<div class="empty-state">No players found</div>`;
     }
 
-    // Search Handler
     function handleSearch() {
       const query = document.getElementById('searchInput').value;
       if (currentView === 'levels') {
@@ -722,7 +750,6 @@
       }
     }
 
-    // Tab Switching
     function switchView(viewName) {
       currentView = viewName;
       const levelsView = document.getElementById('levelsView');
@@ -744,13 +771,15 @@
       handleSearch();
     }
 
-    // Modal Operations
     function openLevelModal(lvlId) {
       let lvl = levelsData.classic.find(x => x.id === lvlId) || levelsData.platformer.find(x => x.id === lvlId);
       if (!lvl) return;
 
+      const pts = getPointsByRank(lvl.rank);
+
       document.getElementById('modalTitle').innerText = lvl.title;
       document.getElementById('modalBody').innerHTML = `
+        <div class="modal-row"><span class="modal-label">Rank</span><span class="modal-val">#${lvl.rank} (${pts} pts)</span></div>
         <div class="modal-row"><span class="modal-label">Creator</span><span class="modal-val">${lvl.creator}</span></div>
         <div class="modal-row"><span class="modal-label">Verifier</span><span class="modal-val">${lvl.verifier}</span></div>
         <div class="modal-row"><span class="modal-label">Victors</span><span class="modal-val">${lvl.victors.length ? lvl.victors.join(', ') : 'None'}</span></div>
@@ -760,7 +789,7 @@
     }
 
     function openPlayerModal(playerName) {
-      const player = playersData.find(p => p.name === playerName);
+      const player = computedPlayersData.find(p => p.name === playerName);
       if (!player) return;
 
       document.getElementById('modalTitle').innerText = player.name;
@@ -768,7 +797,7 @@
         <div class="modal-row"><span class="modal-label">Leaderboard Rank</span><span class="modal-val">#${player.rank}</span></div>
         <div class="modal-row"><span class="modal-label">Classic Points</span><span class="modal-val">${player.classicPts} pts</span></div>
         <div class="modal-row"><span class="modal-label">Platformer Points</span><span class="modal-val">${player.platformerPts} pts</span></div>
-        <div class="modal-row"><span class="modal-label">Total Points</span><span class="modal-val">${player.classicPts + player.platformerPts} pts</span></div>
+        <div class="modal-row"><span class="modal-label">Total Points</span><span class="modal-val">${player.totalPts} pts</span></div>
       `;
       document.getElementById('infoModal').classList.add('open');
     }
@@ -783,7 +812,6 @@
       document.getElementById('infoModal').classList.remove('open');
     }
 
-    // Initialize application
     init();
   </script>
 </body>
