@@ -1,23 +1,36 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" href="demon-extreme.png">
   <title>SpaceGD | Demonlist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
   <style>
     :root {
-      --bg-base: #07060b;
-      --bg-surface: #12101a;
-      --bg-card: #1b1726;
-      --bg-card-hover: #252035;
-      --border-color: #2e2642;
-      --accent-orange: #ff7b00;
-      --accent-red: #ff334b;
-      --accent-glow: rgba(255, 123, 0, 0.25);
-      --text-main: #f4f4f6;
-      --text-muted: #9490a2;
-      --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      --bg-base: #08070d;
+      --bg-surface: #100d1a;
+      --bg-card: #181427;
+      --bg-card-hover: #221c38;
+      --border-color: #2b2342;
+      --border-glow: rgba(255, 115, 0, 0.3);
+      
+      --accent-orange: #ff7700;
+      --accent-orange-glow: rgba(255, 119, 0, 0.25);
+      --accent-red: #ff2a55;
+      --accent-purple: #9d4edd;
+      
+      --text-main: #f8f8fc;
+      --text-muted: #9b94b3;
+      --text-dim: #635b7b;
+      
+      --font-main: 'Outfit', -apple-system, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
     }
 
     * {
@@ -29,154 +42,205 @@
     body {
       background-color: var(--bg-base);
       color: var(--text-main);
-      font-family: var(--font-family);
+      font-family: var(--font-main);
       min-height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(157, 78, 221, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 0, 0.08) 0%, transparent 40%);
     }
 
-    /* Layout Header */
+    /* --- Header & Branding --- */
     header {
-      background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-base) 100%);
+      background: rgba(16, 13, 26, 0.75);
+      backdrop-filter: blur(12px);
       border-bottom: 1px solid var(--border-color);
-      padding: 2.5rem 1rem;
+      padding: 2.5rem 1.5rem 1.75rem;
       text-align: center;
-      position: relative;
+      position: sticky;
+      top: 0;
+      z-index: 100;
     }
 
-    h1 {
-      font-size: 3rem;
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--accent-orange);
-      text-shadow: 0 0 20px var(--accent-glow);
-      margin-bottom: 1rem;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.25rem;
+      filter: drop-shadow(0 0 25px var(--accent-orange-glow));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
     }
 
     .nav-tabs {
       display: inline-flex;
-      background: var(--bg-surface);
+      background: rgba(8, 7, 13, 0.6);
       border: 1px solid var(--border-color);
-      border-radius: 50px;
-      padding: 4px;
-      gap: 4px;
+      border-radius: 100px;
+      padding: 5px;
+      gap: 6px;
     }
 
     .tab-btn {
       background: transparent;
       border: none;
       color: var(--text-muted);
-      padding: 8px 24px;
-      border-radius: 40px;
-      font-weight: 600;
+      padding: 10px 26px;
+      border-radius: 100px;
+      font-weight: 700;
       font-size: 0.95rem;
+      font-family: var(--font-main);
       cursor: pointer;
-      transition: all 0.25s ease;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
     }
 
     .tab-btn.active {
-      background: var(--accent-orange);
-      color: var(--bg-base);
-      box-shadow: 0 0 15px var(--accent-glow);
+      background: linear-gradient(135deg, var(--accent-orange) 0%, #ff5500 100%);
+      color: #000;
+      box-shadow: 0 4px 20px var(--accent-orange-glow);
     }
 
-    /* Main Container */
+    /* --- Layout Container --- */
     main {
-      max-width: 900px;
+      max-width: 960px;
       width: 100%;
       margin: 2rem auto;
-      padding: 0 1rem;
+      padding: 0 1.25rem;
       flex-grow: 1;
     }
 
-    /* Search & Controls Section */
+    /* --- Search & Controls --- */
     .controls-wrapper {
-      display: flex;
-      gap: 1rem;
       margin-bottom: 2rem;
-      flex-wrap: wrap;
     }
 
     .search-box {
-      flex: 1;
       position: relative;
+      width: 100%;
     }
 
     .search-input {
       width: 100%;
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 14px 18px 14px 45px;
+      border-radius: var(--radius-lg);
+      padding: 16px 20px 16px 52px;
       color: var(--text-main);
       font-size: 1rem;
+      font-family: var(--font-main);
       outline: none;
-      transition: border-color 0.2s, box-shadow 0.2s;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
     }
 
     .search-input:focus {
       border-color: var(--accent-orange);
-      box-shadow: 0 0 10px var(--accent-glow);
+      box-shadow: 0 0 0 4px var(--accent-orange-glow);
+      background: var(--bg-card-hover);
     }
 
     .search-icon {
       position: absolute;
-      left: 15px;
+      left: 18px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
-      font-size: 1.1rem;
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
     }
 
+    /* --- Section Headings --- */
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+    }
+
+    /* --- List & Card Styles --- */
     .view-section {
       display: none;
+      animation: fadeIn 0.3s ease;
     }
 
     .view-section.active {
       display: block;
     }
 
-    h2 {
-      font-size: 1.5rem;
-      color: var(--text-main);
-      margin-bottom: 1rem;
-      display: flex;
-      align-items: center;
-      gap: 10px;
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    h2::after {
-      content: "";
-      flex-grow: 1;
-      height: 1px;
-      background: var(--border-color);
-    }
-
-    /* Lists and Cards */
     .item-list {
       list-style: none;
       display: flex;
       flex-direction: column;
       gap: 12px;
-      margin-bottom: 2.5rem;
     }
 
     .card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       padding: 16px 20px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 15px;
-      transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
+      gap: 16px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: transparent;
+      transition: background 0.2s;
     }
 
     .card:hover {
       background: var(--bg-card-hover);
-      border-color: var(--accent-orange);
+      border-color: rgba(255, 119, 0, 0.4);
       transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .card:hover::before {
+      background: var(--accent-orange);
     }
 
     .card-left {
@@ -187,12 +251,26 @@
       min-width: 0;
     }
 
+    /* --- Dynamic Rank Badges --- */
     .rank-badge {
-      width: 36px;
-      height: 36px;
-      object-fit: contain;
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
       flex-shrink: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
     }
+
+    .rank-1 { background: linear-gradient(135deg, #ffe259, #ffa751); color: #000; border: none; box-shadow: 0 0 12px rgba(255,167,81,0.4); }
+    .rank-2 { background: linear-gradient(135deg, #e0e0e0, #f5f5f5); color: #000; border: none; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
+    .rank-3 { background: linear-gradient(135deg, #e5a65d, #ab6f2a); color: #000; border: none; box-shadow: 0 0 12px rgba(229,166,93,0.3); }
 
     .card-content {
       display: flex;
@@ -202,7 +280,7 @@
     }
 
     .card-title {
-      font-size: 1.1rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--text-main);
       white-space: nowrap;
@@ -215,27 +293,26 @@
       color: var(--text-muted);
     }
 
-    .card-subtitle i {
-      font-style: normal;
+    .card-subtitle strong {
       color: var(--accent-orange);
+      font-weight: 600;
     }
 
-    /* Tags */
     .tag-container {
       display: flex;
       gap: 6px;
       flex-wrap: wrap;
-      margin-top: 2px;
+      margin-top: 4px;
     }
 
     .tag {
-      background: rgba(255, 123, 0, 0.1);
+      background: rgba(255, 119, 0, 0.1);
       color: var(--accent-orange);
-      border: 1px solid rgba(255, 123, 0, 0.2);
-      font-size: 0.7rem;
-      padding: 2px 8px;
+      border: 1px solid rgba(255, 119, 0, 0.2);
+      font-size: 0.72rem;
+      padding: 3px 9px;
       border-radius: 6px;
-      font-weight: 600;
+      font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
@@ -243,82 +320,94 @@
     .card-right {
       display: flex;
       align-items: center;
-      gap: 15px;
+      gap: 14px;
       flex-shrink: 0;
     }
 
-    .difficulty-icon {
-      width: 28px;
-      height: 28px;
-      object-fit: contain;
+    /* Custom SVG Demon Icon */
+    .demon-icon {
+      width: 34px;
+      height: 34px;
+      filter: drop-shadow(0 0 6px rgba(255, 42, 85, 0.5));
     }
 
     .info-btn {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
       color: var(--text-muted);
-      width: 34px;
-      height: 34px;
-      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-weight: bold;
       transition: all 0.2s;
     }
 
     .info-btn:hover {
       background: var(--accent-orange);
-      color: var(--bg-base);
+      color: #000;
       border-color: var(--accent-orange);
+      transform: scale(1.05);
     }
 
-    /* Points Card Reference */
+    /* --- Points Panel --- */
     .points-panel {
       background: var(--bg-surface);
       border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 20px;
-      margin-top: 1rem;
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-top: 2rem;
     }
 
     .points-panel h3 {
       color: var(--accent-orange);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       font-size: 1.1rem;
+      font-family: var(--font-display);
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
 
     .points-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 10px;
-      font-size: 0.95rem;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .point-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
       color: var(--text-muted);
     }
 
-    .points-grid div span {
+    .point-card span {
       color: var(--text-main);
-      font-weight: 600;
+      font-weight: 700;
     }
 
-    /* Modal Overlay */
+    /* --- Modal Window --- */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(7, 6, 11, 0.8);
-      backdrop-filter: blur(4px);
+      inset: 0;
+      background: rgba(5, 4, 9, 0.82);
+      backdrop-filter: blur(8px);
       display: flex;
       align-items: center;
       justify-content: center;
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.2s ease;
+      transition: opacity 0.25s ease;
       z-index: 1000;
-      padding: 1rem;
+      padding: 1.25rem;
     }
 
     .modal-overlay.open {
@@ -329,13 +418,13 @@
     .modal-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
-      border-radius: 16px;
-      padding: 24px;
+      border-radius: var(--radius-lg);
+      padding: 28px;
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      transform: scale(0.95);
-      transition: transform 0.2s ease;
+      max-width: 440px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      transform: scale(0.92);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     }
 
     .modal-overlay.open .modal-card {
@@ -346,11 +435,14 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 16px;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
     }
 
     .modal-title {
-      font-size: 1.2rem;
+      font-family: var(--font-display);
+      font-size: 1.3rem;
       color: var(--accent-orange);
       font-weight: 700;
     }
@@ -359,39 +451,89 @@
       background: transparent;
       border: none;
       color: var(--text-muted);
-      font-size: 1.2rem;
+      font-size: 1.4rem;
       cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-surface);
+      color: var(--text-main);
     }
 
     .modal-body {
       color: var(--text-main);
-      font-size: 1rem;
-      line-height: 1.5;
+      font-size: 0.98rem;
+      line-height: 1.6;
     }
 
-    /* Footer */
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .modal-row:last-child {
+      border: none;
+      margin-bottom: 0;
+    }
+
+    .modal-label {
+      color: var(--text-muted);
+    }
+
+    .modal-val {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    /* --- Footer --- */
     footer {
       text-align: center;
-      padding: 1.5rem;
+      padding: 2rem 1rem;
       border-top: 1px solid var(--border-color);
       color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.88rem;
       background: var(--bg-surface);
+      margin-top: auto;
     }
 
-    footer a {
+    footer strong {
       color: var(--accent-orange);
-      text-decoration: none;
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>SpaceGD Demonlist</h1>
+    <h1 class="header-title">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      SpaceGD
+    </h1>
     <div class="nav-tabs">
-      <button class="tab-btn active" onclick="switchView('levels')">Demonlist</button>
-      <button class="tab-btn" onclick="switchView('players')">Players List</button>
+      <button class="tab-btn active" id="btn-levels" onclick="switchView('levels')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+        Demonlist
+      </button>
+      <button class="tab-btn" id="btn-players" onclick="switchView('players')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Players List
+      </button>
     </div>
   </header>
 
@@ -399,163 +541,37 @@
     <!-- Universal Search Bar -->
     <div class="controls-wrapper">
       <div class="search-box">
-        <span class="search-icon">🔍</span>
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         <input type="text" id="searchInput" class="search-input" placeholder="Search levels, creators, or players..." oninput="handleSearch()">
       </div>
     </div>
 
     <!-- Levels View -->
     <div id="levelsView" class="view-section active">
-      <h2>Classic Levels</h2>
-      <ul class="item-list" id="classicList">
-        <li class="card" data-search="big fat balls zesocas chokepoints timing">
-          <div class="card-left">
-            <img src="2.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">Big Fat Balls</span>
-              <span class="card-subtitle">by <i>Zesocas</i></span>
-              <div class="tag-container">
-                <span class="tag">Chokepoints</span>
-                <span class="tag">Timings</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-right">
-            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
-            <button class="info-btn" onclick="openModal('Big Fat Balls', 'Victors: fayza<br>Verifier: Zesocas')">i</button>
-          </div>
-        </li>
+      <div class="section-title">Classic Levels</div>
+      <ul class="item-list" id="classicList"></ul>
 
-        <li class="card" data-search="theleventeenestic zesocas slow timings">
-          <div class="card-left">
-            <img src="3.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">Theleventeenestic</span>
-              <span class="card-subtitle">by <i>Zesocas</i></span>
-              <div class="tag-container">
-                <span class="tag">Slow-Paced</span>
-                <span class="tag">Timings</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-right">
-            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
-            <button class="info-btn" onclick="openModal('Theleventeenestic', 'Victors: Accilon<br>Verifier: fayza')">i</button>
-          </div>
-        </li>
-
-        <li class="card" data-search="where will you be tonight zesocas learny flow">
-          <div class="card-left">
-            <img src="4.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">Where Will You Be Tonight</span>
-              <span class="card-subtitle">by <i>Zesocas</i></span>
-              <div class="tag-container">
-                <span class="tag">Learny</span>
-                <span class="tag">Flow</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-right">
-            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
-            <button class="info-btn" onclick="openModal('Where Will You Be Tonight', 'Victors: fayza<br>Verifier: Zesocas')">i</button>
-          </div>
-        </li>
-      </ul>
-
-      <h2>Platformer Levels</h2>
-      <ul class="item-list" id="platformerList">
-        <li class="card" data-search="disintegration zesocas gimmicks">
-          <div class="card-left">
-            <img src="2.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">disintegration</span>
-              <span class="card-subtitle">by <i>Zesocas</i></span>
-              <div class="tag-container">
-                <span class="tag">Gimmicks</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-right">
-            <img src="demon-extreme.png" class="difficulty-icon" alt="Extreme Demon">
-            <button class="info-btn" onclick="openModal('disintegration', 'Victors: stysan, Dusty<br>Verifier: Zesocas')">i</button>
-          </div>
-        </li>
-      </ul>
+      <div class="section-title">Platformer Levels</div>
+      <ul class="item-list" id="platformerList"></ul>
     </div>
 
     <!-- Players View -->
     <div id="playersView" class="view-section">
-      <h2>Leaderboard</h2>
-      <ul class="item-list" id="playerList">
-        <li class="card" data-search="zesocas">
-          <div class="card-left">
-            <img src="2.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">Zesocas</span>
-            </div>
-          </div>
-          <div class="card-right">
-            <button class="info-btn" onclick="openModal('Zesocas', '125 classic, 100 platformer')">i</button>
-          </div>
-        </li>
-
-        <li class="card" data-search="fayza">
-          <div class="card-left">
-            <img src="3.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">fayza</span>
-            </div>
-          </div>
-          <div class="card-right">
-            <button class="info-btn" onclick="openModal('fayza', '250 classic, 0 platformer')">i</button>
-          </div>
-        </li>
-
-        <li class="card" data-search="stysan">
-          <div class="card-left">
-            <img src="4.png" class="rank-badge" alt="Rank">
-            <div class="card-content">
-              <span class="card-title">Accilon</span>
-            </div>
-          </div>
-          <div class="card-right">
-            <button class="info-btn" onclick="openModal('Accilon', '100 classic, 0 platformer')">i</button>
-          </div>
-        </li>
-
-        <li class="card" data-search="stysan">
-          <div class="card-left">
-            <div class="card-content">
-              <span class="card-title">stysan</span>
-            </div>
-          </div>
-          <div class="card-right">
-            <button class="info-btn" onclick="openModal('stysan', '0 classic, 100 platformer')">i</button>
-          </div>
-        </li>
-
-        <li class="card" data-search="dusty">
-          <div class="card-left">
-            <div class="card-content">
-              <span class="card-title">Dusty</span>
-            </div>
-          </div>
-          <div class="card-right">
-            <button class="info-btn" onclick="openModal('Dusty', '0 classic, 100 platformer')">i</button>
-          </div>
-        </li>
-      </ul>
+      <div class="section-title">Leaderboard</div>
+      <ul class="item-list" id="playerList"></ul>
 
       <div class="points-panel">
-        <h3>Points Reference</h3>
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Points Reference
+        </h3>
         <div class="points-grid">
-          <div>1. <span>100 pts</span></div>
-          <div>2. <span>50 pts</span></div>
-          <div>3. <span>25 pts</span></div>
-          <div>4. <span>10 pts</span></div>
-          <div>5. <span>5 pts</span></div>
-          <div>5&lt;: <span>None</span></div>
+          <div class="point-card">#1 <span>100 pts</span></div>
+          <div class="point-card">#2 <span>50 pts</span></div>
+          <div class="point-card">#3 <span>25 pts</span></div>
+          <div class="point-card">#4 <span>10 pts</span></div>
+          <div class="point-card">#5 <span>5 pts</span></div>
+          <div class="point-card">>#5 <span>0 pts</span></div>
         </div>
       </div>
     </div>
@@ -572,43 +588,188 @@
     </div>
   </div>
 
+  <footer>
+    SpaceGD Demonlist &copy; 2026 &bull; Created for <strong>Geometry Dash</strong> Community
+  </footer>
+
   <script>
+    // Universal SVG Demon Badge Component Generator
+    function getDemonIconSVG() {
+      return `
+        <svg class="demon-icon" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M20 25 L35 40 L15 60 L30 85 L50 95 L70 85 L85 60 L65 40 L80 25 L60 30 L50 10 L40 30 Z" fill="#ff2a55" stroke="#ffe259" stroke-width="3"/>
+          <circle cx="38" cy="50" r="6" fill="#000"/><circle cx="39" cy="49" r="2" fill="#fff"/>
+          <circle cx="62" cy="50" r="6" fill="#000"/><circle cx="63" cy="49" r="2" fill="#fff"/>
+          <path d="M35 70 Q50 82 65 70" stroke="#000" stroke-width="4" fill="none"/>
+          <path d="M22 22 L10 5" stroke="#ff2a55" stroke-width="6" stroke-linecap="round"/>
+          <path d="M78 22 L90 5" stroke="#ff2a55" stroke-width="6" stroke-linecap="round"/>
+        </svg>
+      `;
+    }
+
+    // Dynamic Database Architecture
+    const levelsData = {
+      classic: [
+        { id: 'c1', rank: 2, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'] },
+        { id: 'c2', rank: 3, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'] },
+        { id: 'c3', rank: 4, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow'], verifier: 'Zesocas', victors: ['fayza'] }
+      ],
+      platformer: [
+        { id: 'p1', rank: 2, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty'] }
+      ]
+    };
+
+    const playersData = [
+      { rank: 1, name: 'fayza', classicPts: 250, platformerPts: 0 },
+      { rank: 2, name: 'Zesocas', classicPts: 125, platformerPts: 100 },
+      { rank: 3, name: 'Accilon', classicPts: 100, platformerPts: 0 },
+      { rank: 4, name: 'stysan', classicPts: 0, platformerPts: 100 },
+      { rank: 5, name: 'Dusty', classicPts: 0, platformerPts: 100 }
+    ];
+
+    let currentView = 'levels';
+
+    // Render Function
+    function init() {
+      renderLevels();
+      renderPlayers();
+    }
+
+    function renderLevels(filter = '') {
+      const classicContainer = document.getElementById('classicList');
+      const platformerContainer = document.getElementById('platformerList');
+      
+      const filterTerm = filter.toLowerCase().trim();
+
+      const filterFn = (lvl) => {
+        const text = `${lvl.title} ${lvl.creator} ${lvl.tags.join(' ')} ${lvl.verifier} ${lvl.victors.join(' ')}`.toLowerCase();
+        return text.includes(filterTerm);
+      };
+
+      const classicFiltered = levelsData.classic.filter(filterFn);
+      const platformerFiltered = levelsData.platformer.filter(filterFn);
+
+      classicContainer.innerHTML = classicFiltered.length 
+        ? classicFiltered.map(lvl => createLevelCard(lvl)).join('') 
+        : `<div class="empty-state">No classic levels matching search</div>`;
+
+      platformerContainer.innerHTML = platformerFiltered.length 
+        ? platformerFiltered.map(lvl => createLevelCard(lvl)).join('') 
+        : `<div class="empty-state">No platformer levels matching search</div>`;
+    }
+
+    function createLevelCard(lvl) {
+      const rankClass = lvl.rank <= 3 ? `rank-${lvl.rank}` : '';
+      return `
+        <li class="card">
+          <div class="card-left">
+            <div class="rank-badge ${rankClass}">#${lvl.rank}</div>
+            <div class="card-content">
+              <span class="card-title">${lvl.title}</span>
+              <span class="card-subtitle">by <strong>${lvl.creator}</strong></span>
+              <div class="tag-container">
+                ${lvl.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
+            </div>
+          </div>
+          <div class="card-right">
+            ${getDemonIconSVG()}
+            <button class="info-btn" onclick="openLevelModal('${lvl.id}')" aria-label="Details">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </button>
+          </div>
+        </li>
+      `;
+    }
+
+    function renderPlayers(filter = '') {
+      const container = document.getElementById('playerList');
+      const filterTerm = filter.toLowerCase().trim();
+
+      const filtered = playersData.filter(p => p.name.toLowerCase().includes(filterTerm));
+
+      container.innerHTML = filtered.length 
+        ? filtered.map(p => {
+            const total = p.classicPts + p.platformerPts;
+            const rankClass = p.rank <= 3 ? `rank-${p.rank}` : '';
+            return `
+              <li class="card">
+                <div class="card-left">
+                  <div class="rank-badge ${rankClass}">${p.rank <= 3 ? `#${p.rank}` : p.rank}</div>
+                  <div class="card-content">
+                    <span class="card-title">${p.name}</span>
+                    <span class="card-subtitle">Score: <strong>${total} pts</strong></span>
+                  </div>
+                </div>
+                <div class="card-right">
+                  <button class="info-btn" onclick="openPlayerModal('${p.name}')" aria-label="Details">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  </button>
+                </div>
+              </li>
+            `;
+          }).join('')
+        : `<div class="empty-state">No players found</div>`;
+    }
+
+    // Search Handler
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value;
+      if (currentView === 'levels') {
+        renderLevels(query);
+      } else {
+        renderPlayers(query);
+      }
+    }
+
+    // Tab Switching
     function switchView(viewName) {
+      currentView = viewName;
       const levelsView = document.getElementById('levelsView');
       const playersView = document.getElementById('playersView');
-      const buttons = document.querySelectorAll('.tab-btn');
-
-      buttons.forEach(btn => btn.classList.remove('active'));
+      const btnLevels = document.getElementById('btn-levels');
+      const btnPlayers = document.getElementById('btn-players');
 
       if (viewName === 'levels') {
         levelsView.classList.add('active');
         playersView.classList.remove('active');
-        buttons[0].classList.add('active');
+        btnLevels.classList.add('active');
+        btnPlayers.classList.remove('active');
       } else {
         playersView.classList.add('active');
         levelsView.classList.remove('active');
-        buttons[1].classList.add('active');
+        btnPlayers.classList.add('active');
+        btnLevels.classList.remove('active');
       }
       handleSearch();
     }
 
-    function handleSearch() {
-      const query = document.getElementById('searchInput').value.toLowerCase().trim();
-      const cards = document.querySelectorAll('.card');
+    // Modal Operations
+    function openLevelModal(lvlId) {
+      let lvl = levelsData.classic.find(x => x.id === lvlId) || levelsData.platformer.find(x => x.id === lvlId);
+      if (!lvl) return;
 
-      cards.forEach(card => {
-        const searchData = card.getAttribute('data-search') || '';
-        if (searchData.includes(query)) {
-          card.style.display = 'flex';
-        } else {
-          card.style.display = 'none';
-        }
-      });
+      document.getElementById('modalTitle').innerText = lvl.title;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="modal-row"><span class="modal-label">Creator</span><span class="modal-val">${lvl.creator}</span></div>
+        <div class="modal-row"><span class="modal-label">Verifier</span><span class="modal-val">${lvl.verifier}</span></div>
+        <div class="modal-row"><span class="modal-label">Victors</span><span class="modal-val">${lvl.victors.length ? lvl.victors.join(', ') : 'None'}</span></div>
+        <div class="modal-row"><span class="modal-label">Tags</span><span class="modal-val">${lvl.tags.join(', ')}</span></div>
+      `;
+      document.getElementById('infoModal').classList.add('open');
     }
 
-    function openModal(title, text) {
-      document.getElementById('modalTitle').innerText = title;
-      document.getElementById('modalBody').innerHTML = text;
+    function openPlayerModal(playerName) {
+      const player = playersData.find(p => p.name === playerName);
+      if (!player) return;
+
+      document.getElementById('modalTitle').innerText = player.name;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="modal-row"><span class="modal-label">Leaderboard Rank</span><span class="modal-val">#${player.rank}</span></div>
+        <div class="modal-row"><span class="modal-label">Classic Points</span><span class="modal-val">${player.classicPts} pts</span></div>
+        <div class="modal-row"><span class="modal-label">Platformer Points</span><span class="modal-val">${player.platformerPts} pts</span></div>
+        <div class="modal-row"><span class="modal-label">Total Points</span><span class="modal-val">${player.classicPts + player.platformerPts} pts</span></div>
+      `;
       document.getElementById('infoModal').classList.add('open');
     }
 
@@ -621,7 +782,9 @@
     function forceCloseModal() {
       document.getElementById('infoModal').classList.remove('open');
     }
-  </script>
 
+    // Initialize application
+    init();
+  </script>
 </body>
 </html>
