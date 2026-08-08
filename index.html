@@ -523,7 +523,7 @@
         Demonlist
       </button>
       <button class="tab-btn" id="btn-players" onclick="switchView('players')">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 1 0 7.75"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         Players List
       </button>
     </div>
@@ -610,18 +610,28 @@
       return POINT_SCALE[rank] || 0;
     }
 
-    // 2. Database of Levels
+    // 2. Database of Levels (Ranks derived dynamically from position)
     const levelsData = {
       classic: [
-        { id: 'c1', rank: 1, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'], diff: 'medium' },
-        { id: 'c2', rank: 2, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'], diff: 'medium' },
-        { id: 'c3', rank: 3, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow', 'Nerve Control'], verifier: 'Zesocas', victors: ['fayza'], diff: 'easy' },
-        { id: 'c4', rank: 4, title: 'Chained WILL', creator: 'BUTL', tags: ['Learny', 'Chokepoints'], verifier: 'BUTL', victors: ['fayza'], diff: 'easy' }
+        { id: 'c1', title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'], diff: 'medium' },
+        { id: 'c2', title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'], diff: 'medium' },
+        { id: 'c3', title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow', 'Nerve Control'], verifier: 'Zesocas', victors: ['fayza'], diff: 'easy' },
+        { id: 'c4', title: 'Chained WILL', creator: 'BUTL', tags: ['Learny', 'Chokepoints'], verifier: 'BUTL', victors: ['fayza'], diff: 'easy' }
       ],
       platformer: [
-        { id: 'p1', rank: 1, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty', 'fayza'], diff: 'hard' }
+        { id: 'p1', title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty', 'fayza'], diff: 'hard' }
       ]
     };
+
+    // Auto-assign level ranks based on array order
+    function assignLevelRanks() {
+      levelsData.classic.forEach((lvl, index) => {
+        lvl.rank = index + 1;
+      });
+      levelsData.platformer.forEach((lvl, index) => {
+        lvl.rank = index + 1;
+      });
+    }
 
     let computedPlayersData = [];
     let currentView = 'levels';
@@ -672,6 +682,7 @@
     }
 
     function init() {
+      assignLevelRanks();
       calculatePlayerScores();
       renderLevels();
       renderPlayers();
