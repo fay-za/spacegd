@@ -1,253 +1,838 @@
-<script>
-  const EASY_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/easy.png?raw=true";
-  const MEDIUM_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/medium.png?raw=true";
-  const HARD_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/hard.png?raw=true";
-  const INSANE_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/insane.png?raw=true";
-  const EXTREME_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/extreme.png?raw=true";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SpaceGD | Demonlist</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg-base: #08070d;
+      --bg-surface: #100d1a;
+      --bg-card: #181427;
+      --bg-card-hover: #221c38;
+      --border-color: #2b2342;
+      --border-glow: rgba(255, 115, 0, 0.3);
+      
+      --accent-orange: #ff7700;
+      --accent-orange-glow: rgba(255, 119, 0, 0.25);
+      --accent-red: #ff2a55;
+      --accent-purple: #9d4edd;
+      
+      --text-main: #f8f8fc;
+      --text-muted: #9b94b3;
+      --text-dim: #635b7b;
+      
+      --font-main: 'Outfit', -apple-system, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --radius-lg: 16px;
+      --radius-md: 12px;
+      --radius-sm: 8px;
+    }
 
-  // Map difficulty strings to PNG URLs
-  const DEMON_ICONS = {
-    easy: EASY_DEMON_ICON_PNG,
-    medium: MEDIUM_DEMON_ICON_PNG,
-    hard: HARD_DEMON_ICON_PNG,
-    insane: INSANE_DEMON_ICON_PNG,
-    extreme: EXTREME_DEMON_ICON_PNG
-  };
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
-  function getDemonIcon(diff) {
-    return DEMON_ICONS[diff?.toLowerCase()] || HARD_DEMON_ICON_PNG;
-  }
+    body {
+      background-color: var(--bg-base);
+      color: var(--text-main);
+      font-family: var(--font-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(157, 78, 221, 0.12) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 0, 0.08) 0%, transparent 40%);
+    }
 
-  // 1. Point Reference Mapping Rule
-  const POINT_SCALE = {
-    1: 100,
-    2: 50,
-    3: 25,
-    4: 10,
-    5: 5
-  };
+    header {
+      background: rgba(16, 13, 26, 0.75);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 2.5rem 1.5rem 1.75rem;
+      text-align: center;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  function getPointsByRank(rank) {
-    return POINT_SCALE[rank] || 0;
-  }
+    .header-title {
+      font-family: var(--font-display);
+      font-size: clamp(2rem, 5vw, 3.2rem);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #ffffff 30%, var(--accent-orange) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 1.25rem;
+      filter: drop-shadow(0 0 25px var(--accent-orange-glow));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+    }
 
-  // 2. Database of Levels
-  const levelsData = {
-    classic: [
-      { id: 'c1', rank: 1, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'], diff: 'medium' },
-      { id: 'c2', rank: 2, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'], diff: 'medium' },
-      { id: 'c3', rank: 3, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow'], verifier: 'Zesocas', victors: ['fayza'], diff: 'easy' }
-    ],
-    platformer: [
-      { id: 'p1', rank: 1, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty'], diff: 'hard' }
-    ]
-  };
+    .nav-tabs {
+      display: inline-flex;
+      background: rgba(8, 7, 13, 0.6);
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      padding: 5px;
+      gap: 6px;
+    }
 
-  let computedPlayersData = [];
-  let currentView = 'levels';
+    .tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 10px 26px;
+      border-radius: 100px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      font-family: var(--font-main);
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  // 3. Automatic Player Score Calculation Engine
-  function calculatePlayerScores() {
-    const playerMap = {};
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
 
-    const touchPlayer = (name) => {
-      if (!playerMap[name]) {
-        playerMap[name] = { name, classicPts: 0, platformerPts: 0 };
-      }
+    .tab-btn.active {
+      background: linear-gradient(135deg, var(--accent-orange) 0%, #ff5500 100%);
+      color: #000;
+      box-shadow: 0 4px 20px var(--accent-orange-glow);
+    }
+
+    main {
+      max-width: 960px;
+      width: 100%;
+      margin: 2rem auto;
+      padding: 0 1.25rem;
+      flex-grow: 1;
+    }
+
+    .controls-wrapper {
+      margin-bottom: 2rem;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 16px 20px 16px 52px;
+      color: var(--text-main);
+      font-size: 1rem;
+      font-family: var(--font-main);
+      outline: none;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-input:focus {
+      border-color: var(--accent-orange);
+      box-shadow: 0 0 0 4px var(--accent-orange-glow);
+      background: var(--bg-card-hover);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 18px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      width: 20px;
+      height: 20px;
+      pointer-events: none;
+    }
+
+    .section-title {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: var(--text-main);
+      margin: 2rem 0 1rem;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title::after {
+      content: "";
+      flex-grow: 1;
+      height: 1px;
+      background: linear-gradient(90deg, var(--border-color) 0%, transparent 100%);
+    }
+
+    .view-section {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .view-section.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .item-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: transparent;
+      transition: background 0.2s;
+    }
+
+    .card:hover {
+      background: var(--bg-card-hover);
+      border-color: rgba(255, 119, 0, 0.4);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+    }
+
+    .card:hover::before {
+      background: var(--accent-orange);
+    }
+
+    .card-left {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-grow: 1;
+      min-width: 0;
+    }
+
+    .rank-badge {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-display);
+      font-weight: 800;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+    }
+
+    .rank-1 { background: linear-gradient(135deg, #ffe259, #ffa751); color: #000; border: none; box-shadow: 0 0 12px rgba(255,167,81,0.4); }
+    .rank-2 { background: linear-gradient(135deg, #e0e0e0, #f5f5f5); color: #000; border: none; box-shadow: 0 0 12px rgba(255,255,255,0.3); }
+    .rank-3 { background: linear-gradient(135deg, #e5a65d, #ab6f2a); color: #000; border: none; box-shadow: 0 0 12px rgba(229,166,93,0.3); }
+
+    .card-content {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-main);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .card-subtitle {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .card-subtitle strong {
+      color: var(--accent-orange);
+      font-weight: 600;
+    }
+
+    .tag-container {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+
+    .tag {
+      background: rgba(255, 119, 0, 0.1);
+      color: var(--accent-orange);
+      border: 1px solid rgba(255, 119, 0, 0.2);
+      font-size: 0.72rem;
+      padding: 3px 9px;
+      border-radius: 6px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .card-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-shrink: 0;
+    }
+
+    .demon-icon {
+      width: 36px;
+      height: 36px;
+      object-fit: contain;
+      filter: drop-shadow(0 0 8px rgba(255, 42, 85, 0.4));
+      user-select: none;
+    }
+
+    .info-btn {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      color: var(--text-muted);
+      width: 38px;
+      height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .info-btn:hover {
+      background: var(--accent-orange);
+      color: #000;
+      border-color: var(--accent-orange);
+      transform: scale(1.05);
+    }
+
+    .points-panel {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 22px;
+      margin-top: 2rem;
+    }
+
+    .points-panel h3 {
+      color: var(--accent-orange);
+      margin-bottom: 14px;
+      font-size: 1.1rem;
+      font-family: var(--font-display);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .points-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 12px;
+    }
+
+    .point-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      padding: 10px 14px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .point-card span {
+      color: var(--text-main);
+      font-weight: 700;
+    }
+
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 4, 9, 0.82);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+      z-index: 1000;
+      padding: 1.25rem;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 28px;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      transform: scale(0.92);
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--accent-orange);
+      font-weight: 700;
+    }
+
+    .modal-close {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      cursor: pointer;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .modal-close:hover {
+      background: var(--bg-surface);
+      color: var(--text-main);
+    }
+
+    .modal-body {
+      color: var(--text-main);
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .modal-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border-color);
+    }
+
+    .modal-row:last-child {
+      border: none;
+      margin-bottom: 0;
+    }
+
+    .modal-label {
+      color: var(--text-muted);
+    }
+
+    .modal-val {
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      border-top: 1px solid var(--border-color);
+      color: var(--text-muted);
+      font-size: 0.88rem;
+      background: var(--bg-surface);
+      margin-top: auto;
+    }
+
+    footer strong {
+      color: var(--accent-orange);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 class="header-title">
+      <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-orange)"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+      SpaceGD
+    </h1>
+    <div class="nav-tabs">
+      <button class="tab-btn active" id="btn-levels" onclick="switchView('levels')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path><line x1="4" y1="22" x2="4" y2="15"></line></svg>
+        Demonlist
+      </button>
+      <button class="tab-btn" id="btn-players" onclick="switchView('players')">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+        Players List
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="controls-wrapper">
+      <div class="search-box">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search levels, creators, or players..." oninput="handleSearch()">
+      </div>
+    </div>
+
+    <!-- Levels View -->
+    <div id="levelsView" class="view-section active">
+      <div class="section-title">Classic Levels</div>
+      <ul class="item-list" id="classicList"></ul>
+
+      <div class="section-title">Platformer Levels</div>
+      <ul class="item-list" id="platformerList"></ul>
+    </div>
+
+    <!-- Players View -->
+    <div id="playersView" class="view-section">
+      <div class="section-title">Leaderboard</div>
+      <ul class="item-list" id="playerList"></ul>
+
+      <div class="points-panel">
+        <h3>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+          Points Reference
+        </h3>
+        <div class="points-grid">
+          <div class="point-card">#1 <span>100 pts</span></div>
+          <div class="point-card">#2 <span>50 pts</span></div>
+          <div class="point-card">#3 <span>25 pts</span></div>
+          <div class="point-card">#4 <span>10 pts</span></div>
+          <div class="point-card">#5 <span>5 pts</span></div>
+          <div class="point-card">>#5 <span>0 pts</span></div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div id="infoModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-card">
+      <div class="modal-header">
+        <span id="modalTitle" class="modal-title">Details</span>
+        <button class="modal-close" onclick="forceCloseModal()">✕</button>
+      </div>
+      <div id="modalBody" class="modal-body"></div>
+    </div>
+  </div>
+
+  <footer>
+    SpaceGD Demonlist &copy; 2026 &bull; Created for <strong>Geometry Dash</strong> Community
+  </footer>
+
+  <script>
+    const EASY_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/easy.png?raw=true";
+    const MEDIUM_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/medium.png?raw=true";
+    const HARD_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/hard.png?raw=true";
+    const INSANE_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/insane.png?raw=true";
+    const EXTREME_DEMON_ICON_PNG = "https://github.com/fay-za/spacegd/blob/main/extreme.png?raw=true";
+
+    const DEMON_ICONS = {
+      easy: EASY_DEMON_ICON_PNG,
+      medium: MEDIUM_DEMON_ICON_PNG,
+      hard: HARD_DEMON_ICON_PNG,
+      insane: INSANE_DEMON_ICON_PNG,
+      extreme: EXTREME_DEMON_ICON_PNG
     };
 
-    // Process Classic Levels
-    levelsData.classic.forEach(lvl => {
-      const points = getPointsByRank(lvl.rank);
-      const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
-      
-      completers.forEach(player => {
-        touchPlayer(player);
-        playerMap[player].classicPts += points;
-      });
-    });
+    function getDemonIcon(diff) {
+      return DEMON_ICONS[diff?.toLowerCase()] || HARD_DEMON_ICON_PNG;
+    }
 
-    // Process Platformer Levels
-    levelsData.platformer.forEach(lvl => {
-      const points = getPointsByRank(lvl.rank);
-      const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
-      
-      completers.forEach(player => {
-        touchPlayer(player);
-        playerMap[player].platformerPts += points;
-      });
-    });
-
-    // Convert map to sorted array with auto-assigned ranks
-    computedPlayersData = Object.values(playerMap)
-      .map(p => ({
-        ...p,
-        totalPts: p.classicPts + p.platformerPts
-      }))
-      .sort((a, b) => b.totalPts - a.totalPts)
-      .map((p, index) => ({
-        ...p,
-        rank: index + 1
-      }));
-  }
-
-  function init() {
-    calculatePlayerScores();
-    renderLevels();
-    renderPlayers();
-  }
-
-  function renderLevels(filter = '') {
-    const classicContainer = document.getElementById('classicList');
-    const platformerContainer = document.getElementById('platformerList');
-    const filterTerm = filter.toLowerCase().trim();
-
-    const filterFn = (lvl) => {
-      const text = `${lvl.title} ${lvl.creator} ${lvl.diff || ''} demon ${lvl.tags.join(' ')} ${lvl.verifier} ${lvl.victors.join(' ')}`.toLowerCase();
-      return text.includes(filterTerm);
+    // 1. Point Reference Mapping Rule
+    const POINT_SCALE = {
+      1: 100,
+      2: 50,
+      3: 25,
+      4: 10,
+      5: 5
     };
 
-    const classicFiltered = levelsData.classic.filter(filterFn);
-    const platformerFiltered = levelsData.platformer.filter(filterFn);
+    function getPointsByRank(rank) {
+      return POINT_SCALE[rank] || 0;
+    }
 
-    classicContainer.innerHTML = classicFiltered.length 
-      ? classicFiltered.map(lvl => createLevelCard(lvl)).join('') 
-      : `<div class="empty-state">No classic levels matching search</div>`;
+    // 2. Database of Levels
+    const levelsData = {
+      classic: [
+        { id: 'c1', rank: 1, title: 'Big Fat Balls', creator: 'Zesocas', tags: ['Chokepoints', 'Timings'], verifier: 'Zesocas', victors: ['fayza'], diff: 'medium' },
+        { id: 'c2', rank: 2, title: 'Theleventeenestic', creator: 'Zesocas', tags: ['Slow-Paced', 'Timings'], verifier: 'fayza', victors: ['Accilon'], diff: 'medium' },
+        { id: 'c3', rank: 3, title: 'Where Will You Be Tonight', creator: 'Zesocas', tags: ['Learny', 'Flow'], verifier: 'Zesocas', victors: ['fayza'], diff: 'easy' }
+      ],
+      platformer: [
+        { id: 'p1', rank: 1, title: 'disintegration', creator: 'Zesocas', tags: ['Gimmicks'], verifier: 'Zesocas', victors: ['stysan', 'Dusty'], diff: 'easy' }
+      ]
+    };
 
-    platformerContainer.innerHTML = platformerFiltered.length 
-      ? platformerFiltered.map(lvl => createLevelCard(lvl)).join('') 
-      : `<div class="empty-state">No platformer levels matching search</div>`;
-  }
+    let computedPlayersData = [];
+    let currentView = 'levels';
 
-  function createLevelCard(lvl) {
-    const rankClass = lvl.rank <= 3 ? `rank-${lvl.rank}` : '';
-    const iconUrl = getDemonIcon(lvl.diff);
-    const diffLabel = lvl.diff ? `${lvl.diff.toUpperCase()}` : 'DEMON';
+    // 3. Automatic Player Score Calculation Engine
+    function calculatePlayerScores() {
+      const playerMap = {};
 
-    return `
-      <li class="card">
-        <div class="card-left">
-          <div class="rank-badge ${rankClass}">#${lvl.rank}</div>
-          <div class="card-content">
-            <span class="card-title">${lvl.title}</span>
-            <span class="card-subtitle">by <strong>${lvl.creator}</strong></span>
-            <div class="tag-container">
-              <span class="tag" style="background: rgba(255, 42, 85, 0.15); color: var(--accent-red); border-color: rgba(255, 42, 85, 0.3);">${diffLabel}</span>
-              ${lvl.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+      const touchPlayer = (name) => {
+        if (!playerMap[name]) {
+          playerMap[name] = { name, classicPts: 0, platformerPts: 0 };
+        }
+      };
+
+      // Process Classic Levels
+      levelsData.classic.forEach(lvl => {
+        const points = getPointsByRank(lvl.rank);
+        const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
+        
+        completers.forEach(player => {
+          touchPlayer(player);
+          playerMap[player].classicPts += points;
+        });
+      });
+
+      // Process Platformer Levels
+      levelsData.platformer.forEach(lvl => {
+        const points = getPointsByRank(lvl.rank);
+        const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
+        
+        completers.forEach(player => {
+          touchPlayer(player);
+          playerMap[player].platformerPts += points;
+        });
+      });
+
+      // Convert map to sorted array with auto-assigned ranks
+      computedPlayersData = Object.values(playerMap)
+        .map(p => ({
+          ...p,
+          totalPts: p.classicPts + p.platformerPts
+        }))
+        .sort((a, b) => b.totalPts - a.totalPts)
+        .map((p, index) => ({
+          ...p,
+          rank: index + 1
+        }));
+    }
+
+    function init() {
+      calculatePlayerScores();
+      renderLevels();
+      renderPlayers();
+    }
+
+    function renderLevels(filter = '') {
+      const classicContainer = document.getElementById('classicList');
+      const platformerContainer = document.getElementById('platformerList');
+      const filterTerm = filter.toLowerCase().trim();
+
+      const filterFn = (lvl) => {
+        const text = `${lvl.title} ${lvl.creator} ${lvl.diff || ''} demon ${lvl.tags.join(' ')} ${lvl.verifier} ${lvl.victors.join(' ')}`.toLowerCase();
+        return text.includes(filterTerm);
+      };
+
+      const classicFiltered = levelsData.classic.filter(filterFn);
+      const platformerFiltered = levelsData.platformer.filter(filterFn);
+
+      classicContainer.innerHTML = classicFiltered.length 
+        ? classicFiltered.map(lvl => createLevelCard(lvl)).join('') 
+        : `<div class="empty-state">No classic levels matching search</div>`;
+
+      platformerContainer.innerHTML = platformerFiltered.length 
+        ? platformerFiltered.map(lvl => createLevelCard(lvl)).join('') 
+        : `<div class="empty-state">No platformer levels matching search</div>`;
+    }
+
+    function createLevelCard(lvl) {
+      const rankClass = lvl.rank <= 3 ? `rank-${lvl.rank}` : '';
+      const iconUrl = getDemonIcon(lvl.diff);
+      const diffLabel = lvl.diff ? `${lvl.diff.toUpperCase()}` : 'DEMON';
+
+      return `
+        <li class="card">
+          <div class="card-left">
+            <div class="rank-badge ${rankClass}">#${lvl.rank}</div>
+            <div class="card-content">
+              <span class="card-title">${lvl.title}</span>
+              <span class="card-subtitle">by <strong>${lvl.creator}</strong></span>
+              <div class="tag-container">
+                <span class="tag" style="background: rgba(255, 42, 85, 0.15); color: var(--accent-red); border-color: rgba(255, 42, 85, 0.3);">${diffLabel}</span>
+                ${lvl.tags.map(t => `<span class="tag">${t}</span>`).join('')}
+              </div>
             </div>
           </div>
-        </div>
-        <div class="card-right">
-          <img class="demon-icon" src="${iconUrl}" alt="${lvl.diff} Demon" title="${lvl.diff} Demon" />
-          <button class="info-btn" onclick="openLevelModal('${lvl.id}')" aria-label="Details">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-          </button>
-        </div>
-      </li>
-    `;
-  }
+          <div class="card-right">
+            <img class="demon-icon" src="${iconUrl}" alt="${lvl.diff} Demon" title="${lvl.diff} Demon" />
+            <button class="info-btn" onclick="openLevelModal('${lvl.id}')" aria-label="Details">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+            </button>
+          </div>
+        </li>
+      `;
+    }
 
-  function renderPlayers(filter = '') {
-    const container = document.getElementById('playerList');
-    const filterTerm = filter.toLowerCase().trim();
+    function renderPlayers(filter = '') {
+      const container = document.getElementById('playerList');
+      const filterTerm = filter.toLowerCase().trim();
 
-    const filtered = computedPlayersData.filter(p => p.name.toLowerCase().includes(filterTerm));
+      const filtered = computedPlayersData.filter(p => p.name.toLowerCase().includes(filterTerm));
 
-    container.innerHTML = filtered.length 
-      ? filtered.map(p => {
-          const rankClass = p.rank <= 3 ? `rank-${p.rank}` : '';
-          return `
-            <li class="card">
-              <div class="card-left">
-                <div class="rank-badge ${rankClass}">#${p.rank}</div>
-                <div class="card-content">
-                  <span class="card-title">${p.name}</span>
-                  <span class="card-subtitle">Score: <strong>${p.totalPts} pts</strong></span>
+      container.innerHTML = filtered.length 
+        ? filtered.map(p => {
+            const rankClass = p.rank <= 3 ? `rank-${p.rank}` : '';
+            return `
+              <li class="card">
+                <div class="card-left">
+                  <div class="rank-badge ${rankClass}">#${p.rank}</div>
+                  <div class="card-content">
+                    <span class="card-title">${p.name}</span>
+                    <span class="card-subtitle">Score: <strong>${p.totalPts} pts</strong></span>
+                  </div>
                 </div>
-              </div>
-              <div class="card-right">
-                <button class="info-btn" onclick="openPlayerModal('${p.name}')" aria-label="Details">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                </button>
-              </div>
-            </li>
-          `;
-        }).join('')
-      : `<div class="empty-state">No players found</div>`;
-  }
-
-  function handleSearch() {
-    const query = document.getElementById('searchInput').value;
-    if (currentView === 'levels') {
-      renderLevels(query);
-    } else {
-      renderPlayers(query);
+                <div class="card-right">
+                  <button class="info-btn" onclick="openPlayerModal('${p.name}')" aria-label="Details">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                  </button>
+                </div>
+              </li>
+            `;
+          }).join('')
+        : `<div class="empty-state">No players found</div>`;
     }
-  }
 
-  function switchView(viewName) {
-    currentView = viewName;
-    const levelsView = document.getElementById('levelsView');
-    const playersView = document.getElementById('playersView');
-    const btnLevels = document.getElementById('btn-levels');
-    const btnPlayers = document.getElementById('btn-players');
-
-    if (viewName === 'levels') {
-      levelsView.classList.add('active');
-      playersView.classList.remove('active');
-      btnLevels.classList.add('active');
-      btnPlayers.classList.remove('active');
-    } else {
-      playersView.classList.add('active');
-      levelsView.classList.remove('active');
-      btnPlayers.classList.add('active');
-      btnLevels.classList.remove('active');
+    function handleSearch() {
+      const query = document.getElementById('searchInput').value;
+      if (currentView === 'levels') {
+        renderLevels(query);
+      } else {
+        renderPlayers(query);
+      }
     }
-    handleSearch();
-  }
 
-  function openLevelModal(lvlId) {
-    let lvl = levelsData.classic.find(x => x.id === lvlId) || levelsData.platformer.find(x => x.id === lvlId);
-    if (!lvl) return;
+    function switchView(viewName) {
+      currentView = viewName;
+      const levelsView = document.getElementById('levelsView');
+      const playersView = document.getElementById('playersView');
+      const btnLevels = document.getElementById('btn-levels');
+      const btnPlayers = document.getElementById('btn-players');
 
-    const pts = getPointsByRank(lvl.rank);
-    const diffText = lvl.diff ? `${lvl.diff.charAt(0).toUpperCase() + lvl.diff.slice(1)} Demon` : 'Demon';
+      if (viewName === 'levels') {
+        levelsView.classList.add('active');
+        playersView.classList.remove('active');
+        btnLevels.classList.add('active');
+        btnPlayers.classList.remove('active');
+      } else {
+        playersView.classList.add('active');
+        levelsView.classList.remove('active');
+        btnPlayers.classList.add('active');
+        btnLevels.classList.remove('active');
+      }
+      handleSearch();
+    }
 
-    document.getElementById('modalTitle').innerText = lvl.title;
-    document.getElementById('modalBody').innerHTML = `
-      <div class="modal-row"><span class="modal-label">Rank</span><span class="modal-val">#${lvl.rank} (${pts} pts)</span></div>
-      <div class="modal-row"><span class="modal-label">Difficulty</span><span class="modal-val">${diffText}</span></div>
-      <div class="modal-row"><span class="modal-label">Creator</span><span class="modal-val">${lvl.creator}</span></div>
-      <div class="modal-row"><span class="modal-label">Verifier</span><span class="modal-val">${lvl.verifier}</span></div>
-      <div class="modal-row"><span class="modal-label">Victors</span><span class="modal-val">${lvl.victors.length ? lvl.victors.join(', ') : 'None'}</span></div>
-      <div class="modal-row"><span class="modal-label">Tags</span><span class="modal-val">${lvl.tags.join(', ')}</span></div>
-    `;
-    document.getElementById('infoModal').classList.add('open');
-  }
+    function openLevelModal(lvlId) {
+      let lvl = levelsData.classic.find(x => x.id === lvlId) || levelsData.platformer.find(x => x.id === lvlId);
+      if (!lvl) return;
 
-  function openPlayerModal(playerName) {
-    const player = computedPlayersData.find(p => p.name === playerName);
-    if (!player) return;
+      const pts = getPointsByRank(lvl.rank);
+      const diffText = lvl.diff ? `${lvl.diff.charAt(0).toUpperCase() + lvl.diff.slice(1)} Demon` : 'Demon';
 
-    document.getElementById('modalTitle').innerText = player.name;
-    document.getElementById('modalBody').innerHTML = `
-      <div class="modal-row"><span class="modal-label">Leaderboard Rank</span><span class="modal-val">#${player.rank}</span></div>
-      <div class="modal-row"><span class="modal-label">Classic Points</span><span class="modal-val">${player.classicPts} pts</span></div>
-      <div class="modal-row"><span class="modal-label">Platformer Points</span><span class="modal-val">${player.platformerPts} pts</span></div>
-      <div class="modal-row"><span class="modal-label">Total Points</span><span class="modal-val">${player.totalPts} pts</span></div>
-    `;
-    document.getElementById('infoModal').classList.add('open');
-  }
+      document.getElementById('modalTitle').innerText = lvl.title;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="modal-row"><span class="modal-label">Rank</span><span class="modal-val">#${lvl.rank} (${pts} pts)</span></div>
+        <div class="modal-row"><span class="modal-label">Difficulty</span><span class="modal-val">${diffText}</span></div>
+        <div class="modal-row"><span class="modal-label">Creator</span><span class="modal-val">${lvl.creator}</span></div>
+        <div class="modal-row"><span class="modal-label">Verifier</span><span class="modal-val">${lvl.verifier}</span></div>
+        <div class="modal-row"><span class="modal-label">Victors</span><span class="modal-val">${lvl.victors.length ? lvl.victors.join(', ') : 'None'}</span></div>
+        <div class="modal-row"><span class="modal-label">Tags</span><span class="modal-val">${lvl.tags.join(', ')}</span></div>
+      `;
+      document.getElementById('infoModal').classList.add('open');
+    }
 
-  function closeModal(event) {
-    if (event.target.id === 'infoModal') {
+    function openPlayerModal(playerName) {
+      const player = computedPlayersData.find(p => p.name === playerName);
+      if (!player) return;
+
+      document.getElementById('modalTitle').innerText = player.name;
+      document.getElementById('modalBody').innerHTML = `
+        <div class="modal-row"><span class="modal-label">Leaderboard Rank</span><span class="modal-val">#${player.rank}</span></div>
+        <div class="modal-row"><span class="modal-label">Classic Points</span><span class="modal-val">${player.classicPts} pts</span></div>
+        <div class="modal-row"><span class="modal-label">Platformer Points</span><span class="modal-val">${player.platformerPts} pts</span></div>
+        <div class="modal-row"><span class="modal-label">Total Points</span><span class="modal-val">${player.totalPts} pts</span></div>
+      `;
+      document.getElementById('infoModal').classList.add('open');
+    }
+
+    function closeModal(event) {
+      if (event.target.id === 'infoModal') {
+        document.getElementById('infoModal').classList.remove('open');
+      }
+    }
+
+    function forceCloseModal() {
       document.getElementById('infoModal').classList.remove('open');
     }
-  }
 
-  function forceCloseModal() {
-    document.getElementById('infoModal').classList.remove('open');
-  }
-
-  init();
-</script>
+    init();
+  </script>
+</body>
+</html>
