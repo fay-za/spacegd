@@ -13,7 +13,7 @@
       --bg-base: #08070d;
       --bg-surface: #100d1a;
       --bg-card: #181427;
-      --bg-card-hover: #221c38;
+      --bg-card-hover: #221c38; 
       --border-color: #2b2342;
       --border-glow: rgba(255, 115, 0, 0.3);
       
@@ -310,6 +310,28 @@
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.5px;
+      transition: all 0.2s ease;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .tag:hover {
+      background: rgba(255, 119, 0, 0.25);
+      border-color: var(--accent-orange);
+      transform: scale(1.04);
+      box-shadow: 0 2px 8px rgba(255,119,0,0.15);
+    }
+
+    .tag.difficulty-tag {
+      background: rgba(255, 42, 85, 0.15);
+      color: var(--accent-red);
+      border-color: rgba(255, 42, 85, 0.3);
+    }
+
+    .tag.difficulty-tag:hover {
+      background: rgba(255, 42, 85, 0.25);
+      border-color: var(--accent-red);
+      box-shadow: 0 2px 8px rgba(255,42,85,0.2);
     }
 
     .card-right {
@@ -584,7 +606,6 @@
       return DEMON_ICONS[diff?.toLowerCase()] || HARD_DEMON_ICON_PNG;
     }
 
-    // 1. Point Reference Mapping Rule
     const POINT_SCALE = {
       1: 100,
       2: 80,
@@ -602,7 +623,6 @@
       return POINT_SCALE[rank] || 0;
     }
 
-    // 2. Database of Levels (Ranks derived dynamically from position)
     const levelsData = {
       "classic": [
             {
@@ -739,7 +759,6 @@
       ]
 };
 
-    // Auto-assign level ranks based on array order
     function assignLevelRanks() {
       levelsData.classic.forEach((lvl, index) => {
         lvl.rank = index + 1;
@@ -752,7 +771,6 @@
     let computedPlayersData = [];
     let currentView = 'levels';
 
-    // 3. Automatic Player Score Calculation Engine
     function calculatePlayerScores() {
       const playerMap = {};
 
@@ -762,7 +780,6 @@
         }
       };
 
-      // Process Classic Levels
       levelsData.classic.forEach(lvl => {
         const points = getPointsByRank(lvl.rank);
         const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
@@ -773,7 +790,6 @@
         });
       });
 
-      // Process Platformer Levels
       levelsData.platformer.forEach(lvl => {
         const points = getPointsByRank(lvl.rank);
         const completers = new Set([lvl.verifier, ...lvl.victors].filter(Boolean));
@@ -784,7 +800,6 @@
         });
       });
 
-      // Convert map to sorted array with auto-assigned ranks
       computedPlayersData = Object.values(playerMap)
         .map(p => ({
           ...p,
@@ -826,30 +841,30 @@
         : `<div class="empty-state">No platformer levels matching search</div>`;
     }
 
-    function createLevelCard(lvl) {
-      const rankClass = lvl.rank <= 3 ? `rank-${lvl.rank}` : '';
-      const iconUrl = getDemonIcon(lvl.diff);
-      const diffLabel = lvl.diff ? `${lvl.diff.toUpperCase()}` : 'DEMON';
+	function createLevelCard(lvl) {
+	  const rankClass = lvl.rank <= 3 ? `rank-${lvl.rank}` : '';
+	  const iconUrl = getDemonIcon(lvl.diff);
+	  const diffLabel = lvl.diff ? `${lvl.diff.toUpperCase()}` : 'DEMON';
 
-      return `
-        <li class="card" onclick="openLevelModal('${lvl.id}')">
-          <div class="card-left">
-            <div class="rank-badge ${rankClass}">#${lvl.rank}</div>
-            <div class="card-content">
-              <span class="card-title">${lvl.title}</span>
-              <span class="card-subtitle">by <strong>${lvl.creator}</strong></span>
-              <div class="tag-container">
-                <span class="tag" style="background: rgba(255, 42, 85, 0.15); color: var(--accent-red); border-color: rgba(255, 42, 85, 0.3);">${diffLabel}</span>
-                ${lvl.tags.map(t => `<span class="tag">${t}</span>`).join('')}
-              </div>
-            </div>
-          </div>
-          <div class="card-right">
-            <img class="demon-icon" src="${iconUrl}" alt="${lvl.diff} Demon" title="${lvl.diff} Demon" />
-          </div>
-        </li>
-      `;
-    }
+	  return `
+		<li class="card" onclick="openLevelModal('${lvl.id}')">
+		  <div class="card-left">
+			<div class="rank-badge ${rankClass}">#${lvl.rank}</div>
+			<div class="card-content">
+			  <span class="card-title">${lvl.title}</span>
+			  <span class="card-subtitle">by <strong>${lvl.creator}</strong></span>
+			  <div class="tag-container" onclick="event.stopPropagation(); event.preventDefault();">
+				<span class="tag difficulty-tag" data-tag="${diffLabel}" onclick="filterByTag('${diffLabel}'); event.stopPropagation();">${diffLabel}</span>
+				${lvl.tags.map(t => `<span class="tag" data-tag="${t}" onclick="filterByTag('${t}'); event.stopPropagation();">${t}</span>`).join('')}
+			  </div>
+			</div>
+		  </div>
+		  <div class="card-right">
+			<img class="demon-icon" src="${iconUrl}" alt="${lvl.diff} Demon" title="${lvl.diff} Demon" />
+		  </div>
+		</li>
+	  `;
+	}
 
     function renderPlayers(filter = '') {
       const container = document.getElementById('playerList');
@@ -905,6 +920,26 @@
       handleSearch();
     }
 
+    function setupTagListeners() {
+      document.body.addEventListener('click', (e) => {
+        const tagElement = e.target.closest('.tag');
+        if (!tagElement) return;
+        
+        const tagText = tagElement.getAttribute('data-tag');
+        if (!tagText) return;
+
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.value = tagText;
+          handleSearch();
+          
+          if (currentView !== 'levels') {
+            switchView('levels');
+          }
+        }
+      });
+    }
+
     function openLevelModal(lvlId) {
       let lvl = levelsData.classic.find(x => x.id === lvlId) || levelsData.platformer.find(x => x.id === lvlId);
       if (!lvl) return;
@@ -948,7 +983,43 @@
       document.getElementById('infoModal').classList.remove('open');
     }
 
-    init();
+	document.addEventListener('click', function(e) {
+	  const tag = e.target.closest('.tag');
+	  if (!tag) return;
+	  
+	  e.stopPropagation();
+	  e.stopImmediatePropagation();
+	  e.preventDefault();
+	  
+	  const tagText = tag.getAttribute('data-tag');
+	  const searchInput = document.getElementById('searchInput');
+	  
+	  searchInput.value = tagText;
+	  
+	  if (currentView !== 'levels') {
+		switchView('levels');
+	  }
+	  
+	  renderLevels(tagText);
+	  
+	  return false;
+	});
+	
+	function filterByTag(tagText) {
+	  const searchInput = document.getElementById('searchInput');
+	  searchInput.value = tagText;
+	  
+	  if (currentView !== 'levels') {
+		switchView('levels');
+	  }
+	  
+	  renderLevels(tagText);
+	}
+
+	init();
+
+	init();
+    setupTagListeners();
   </script>
 </body>
 </html>
